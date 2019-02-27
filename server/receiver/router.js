@@ -11,7 +11,7 @@ const getReceivers = (req, res) => {
 }
 
 const postReceiver = (req, res) => {
-  const receiverBody = _.pick(req.body, ['name, email'])
+  const receiverBody = _.pick(req.body, ['name', 'email'])
   const receiver = new Receiver(receiverBody)
   receiver.save().then(newReceiver => {
     res.send(newReceiver)
