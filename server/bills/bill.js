@@ -6,9 +6,11 @@ const BillSchema = new mongoose.Schema({
     required: true,
     minlength: 5,
     trim: true
+  }, amount: {
+    type: Number,
+    required: true
   }, dueTo: {
     type: Number,
-    require: true
   }, paid: {
     type: Boolean,
     default: false
