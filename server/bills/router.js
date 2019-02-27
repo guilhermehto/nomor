@@ -21,7 +21,6 @@ const postBill = (req, res) => {
 
   mongoose.model('Receiver').findById(billBody.receiver).then(receiver => {
     if (!receiver) {
-      console.log('receiver not found')
       return res.status(404).send({ error: 'Receiver not found'})
     }
 
@@ -40,7 +39,35 @@ const postBill = (req, res) => {
 
 }
 
+const patchBill = (req, res) => {
+  const billBody = _.pick(req.body, ['description', 'amount', 'dueTo', 'receiver'])
+
+  if (!ObjectID.isValid(billBody.receiver)) {
+    return res.status(400).send({ error: 'Invalid receiver ID' })
+  }
+
+  mongoose.model('Receiver').findById(billBody.receiver).then(receiver => {
+    if (!receiver) {
+      return res.status(404).send({ error: 'Receiver not found'})
+    }
+
+    Bill.findByIdAndUpdate(req.params.id, { $set: billBody }, { new: true }).then(updatedBill => {
+      if (!updatedBill) {
+        return res.status(404).send()
+      }
+
+      res.send(updatedBill)
+    }, error => {
+      res.status(400).send(error)
+    })
+    
+  }, error => {
+    res.status(400).send(error)
+  })
+ }
+
 router.get('/bills', getBills)
 router.post('/bills', postBill)
+router.patch('/bills/:id', patchBill)
 
 module.exports = router
