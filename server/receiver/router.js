@@ -1,5 +1,6 @@
 const Receiver = require('./Receiver')
 const router = require('express').Router()
+const _ = require('lodash')
 
 const getReceivers = (req, res) => {
   Receiver.find().then(receivers => {
@@ -9,6 +10,17 @@ const getReceivers = (req, res) => {
   })
 }
 
+const postReceiver = (req, res) => {
+  const receiverBody = _.pick(req.body, ['name, email'])
+  const receiver = new Receiver(receiverBody)
+  receiver.save().then(newReceiver => {
+    res.send(newReceiver)
+  }, error => {
+    res.status(400).send(error)
+  })
+}
+
 router.get('/receivers', getReceivers)
+router.post('/receivers', postReceivers)
 
 module.exports = router
