@@ -18,4 +18,4 @@ const ReceiverSchema = mongoose.Schema({
 
 const Receiver = mongoose.model('Receiver', ReceiverSchema)
 
-module.exports = { Receiver, ReceiverSchema }
+module.exports = Receiver

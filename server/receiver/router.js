@@ -1,4 +1,4 @@
-const { Receiver } = require('./Receiver')
+const Receiver = require('./Receiver')
 const router = require('express').Router()
 const _ = require('lodash')
 
