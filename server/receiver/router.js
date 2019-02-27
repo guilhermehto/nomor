@@ -1,4 +1,4 @@
-const Receiver = require('./Receiver')
+const { Receiver } = require('./Receiver')
 const router = require('express').Router()
 const _ = require('lodash')
 
@@ -21,6 +21,6 @@ const postReceiver = (req, res) => {
 }
 
 router.get('/receivers', getReceivers)
-router.post('/receivers', postReceivers)
+router.post('/receivers', postReceiver)
 
 module.exports = router
