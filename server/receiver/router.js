@@ -20,7 +20,22 @@ const postReceiver = (req, res) => {
   })
 }
 
+const patchReceiver = (req, res) => {
+  const receiverBody = _.pick(req.body, ['name', 'email'])
+  Receiver.findByIdAndUpdate(req.params.id, { $set: receiverBody }, { new: true })
+    .then(updatedReceiver => {
+      if (!updatedReceiver) {
+        res.status(404).send()
+      }
+
+      res.send(updatedReceiver)
+    }, error => {
+      res.status(400).send(error)
+    })
+}
+
 router.get('/receivers', getReceivers)
 router.post('/receivers', postReceiver)
+router.patch('/receivers/:id', patchReceiver)
 
 module.exports = router
