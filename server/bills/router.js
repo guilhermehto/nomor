@@ -40,7 +40,11 @@ const postBill = (req, res) => {
 }
 
 const patchBill = (req, res) => {
-  const billBody = _.pick(req.body, ['description', 'amount', 'dueTo', 'receiver'])
+  const billBody = _.pick(req.body, ['description', 'amount', 'dueTo', 'receiver', 'paid'])
+
+  if (!billBody.receiver) {
+    return saveBill(req.params.id, billBody, res)
+  }
 
   if (!ObjectID.isValid(billBody.receiver)) {
     return res.status(400).send({ error: 'Invalid receiver ID' })
@@ -51,20 +55,23 @@ const patchBill = (req, res) => {
       return res.status(404).send({ error: 'Receiver not found'})
     }
 
-    Bill.findByIdAndUpdate(req.params.id, { $set: billBody }, { new: true }).then(updatedBill => {
-      if (!updatedBill) {
-        return res.status(404).send()
-      }
-
-      res.send(updatedBill)
-    }, error => {
-      res.status(400).send(error)
-    })
-    
+    return saveBill(req.params.id, billBody, res)
   }, error => {
     res.status(400).send(error)
   })
- }
+}
+
+const saveBill = (id, body, res) => {
+  Bill.findByIdAndUpdate(id, { $set: body }, { new: true }).then(updatedBill => {
+    if (!updatedBill) {
+      return res.status(404).send()
+    }
+
+    return res.send(updatedBill)
+  }, error => {
+    return res.status(400).send(error)
+  })
+}
 
 router.get('/bills', getBills)
 router.post('/bills', postBill)
